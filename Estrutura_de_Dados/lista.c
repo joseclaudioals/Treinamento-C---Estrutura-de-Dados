@@ -55,18 +55,21 @@ void cadastrarPessoa(){
         totalPessoas++;
         novoNode->proximo=NULL; // o novo nó sempre será o ultimo
             
-        if(head==NULL){
+        if(head==NULL)
             head = novoNode;
-            return;
+        else{
+            noPessoa *ultimo = head;
+            while(ultimo->proximo != NULL)
+                ultimo = ultimo->proximo;
+                
+            ultimo->proximo=novoNode;
         }
         
-        noPessoa *ultimo = head;
-        while(ultimo->proximo != NULL)
-            ultimo = ultimo->proximo;
-            
-        ultimo->proximo=novoNode;
-    }while(1);
-    
+        printf("\ndeseja cadastrar outra pessoa?\n s - sim\n n - nao\n");
+        scanf(" %c", &tempC);
+
+    }while(tolower(tempC)=='s');
+
 }
 
 
