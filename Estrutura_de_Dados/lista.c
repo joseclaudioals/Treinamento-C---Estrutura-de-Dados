@@ -13,80 +13,11 @@ typedef struct noPessoa{
 }noPessoa;
 
 noPessoa *head = NULL;
-int totalPessoas=0;
 
-void limparBuffer(){
-    int c;
-    while ((c = getchar()) != '\n' && c != EOF){}
-}
-
-void cadastrarPessoa(){
-    char tempC;
-    do{
-        noPessoa *novoNode = malloc(sizeof(noPessoa));
-        if(novoNode==NULL){
-        printf("erro catastrofico\n");
-        exit(1);
-        }
-        printf("\ninsira o nome da Pessoa: ");
-        scanf(" %20s", novoNode->nome);
-        limparBuffer();
-
-        printf("\ninsira o cpf da pessoa: ");
-        scanf(" %11s", novoNode->cpf);
-        limparBuffer();
-
-        printf("\ninsira a idade da pessoa: ");
-        scanf(" %i", &novoNode->idade);
-        limparBuffer();
-
-        printf("\ninsira o sexo da pessoa\n[F] Feminino\n[M] Masculino\n");
-        
-        scanf(" %c", &tempC);
-        limparBuffer();
-
-        if(tolower(tempC)=='f' || tolower(tempC)=='m')
-            novoNode->sexo = tempC;
-        else {
-            printf("\nOpcao invalida, valor nao cadastrado");
-            novoNode->sexo = '?';
-        }
-            
-        totalPessoas++;
-        novoNode->proximo=NULL; // o novo nó sempre será o ultimo
-            
-        if(head==NULL)
-            head = novoNode;
-        else{
-            noPessoa *ultimo = head;
-            while(ultimo->proximo != NULL)
-                ultimo = ultimo->proximo;
-                
-            ultimo->proximo=novoNode;
-        }
-        
-        printf("\ndeseja cadastrar outra pessoa?\n s - sim\n n - nao\n");
-        scanf(" %c", &tempC);
-
-    }while(tolower(tempC)=='s');
-}
-
-void removerCadastro(){
-    if(head==NULL){
-        printf("lista vazia, nada a remover. \n");
-        return;
-    }
-}
-
-int buscar(char cpf[12]){
-    int con=1;
-    noPessoa *noAtual = head;
-    while(noAtual!=NULL){
-        if(strcmp(cpf, *noAtual->cpf)==0)
-            return con;
-        noAtual = noAtual->proximo;
-    }
-}
+void limparBuffer();
+void cadastrarPessoa();
+void removerCadastro();
+int buscar(char cpf[12]);
 
 int main(void){
     int opt=0;
@@ -123,4 +54,71 @@ int main(void){
     
         }
     }while(opt!=0);
+}
+
+void limparBuffer(){
+    int c;
+    while ((c = getchar()) != '\n' && c != EOF){}
+}
+void cadastrarPessoa(){
+    do{
+        noPessoa *novoNode = malloc(sizeof(noPessoa));
+        if(novoNode==NULL){
+            printf("falha catastrofica, erro ao alocar memoria!\b");
+            return;
+        }
+        printf("node criado com sucesso");
+
+        inputInformacao(novoNode);
+
+        novoNode->proximo=NULL; //node inserido é sempre o ultimo
+
+        //verificando se a lista esta vazia
+        if(head==NULL){
+            head=novoNode;
+        }
+        else{
+            noPessoa *ultimo = head;
+            while(ultimo->proximo!=NULL){
+                ultimo=ultimo->proximo;
+            }
+            ultimo->proximo=novoNode;
+        }
+
+        
+        
+    }while(tolower(tempC)=='S');
+}
+void inputInformacao(noPessoa **novoNode){
+    
+}
+int buscar(char cpf[12]){
+    int con=1;
+    noPessoa *noAtual = head;
+    while(noAtual!=NULL){
+        if(strcmp(cpf, *noAtual->cpf)==0)
+            return con;
+        noAtual = noAtual->proximo;
+    }
+}
+void removerCadastro(){
+    if(head==NULL){
+        printf("lista vazia, nada a remover. \n");
+        return;
+    }
+}
+int controleRepetir(){
+    char tempC;
+    do{
+        printf("deseja repetir a operacao?\n");
+        scanf(" %c", &tempC);
+        limparBuffer();
+        if(tolower(tempC)=='s'||tolower(tempC)=='n')
+            printf("numero invalido, digite novamente!\n");
+
+        if(tolower(tempC)=='s')
+            return 1;
+        if(tolower(tempC)=='n')
+            return 0;
+    }while(!(tolower(tempC)=='s'||tolower(tempC)=='n'));
 }
