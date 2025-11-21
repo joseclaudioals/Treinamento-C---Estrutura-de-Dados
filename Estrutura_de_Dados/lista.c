@@ -19,7 +19,7 @@ void limparBuffer();
 void cadastrarPessoa();
 void inputInformacao();
 int controleRepetir();
-//void removerCadastro();
+void removerCadastro();
 int buscar(char cpf[12]);
 void imprimir(noPessoa* node);
 void exibirUmRegistro();
@@ -32,7 +32,7 @@ int main(void){
     printf(">> CADASTRO DE PESSOAS <<\n");
     do{
         printf("cadastrar pessoa ------ 1\n");
-        printf("remover uma pesosa ---- 2\n");
+        printf("remover um cadastro ---- 2\n");
         printf("alterar registro ------ 3\n");
         printf("exibir registro unico - 4\n");
         printf("exibir todos ---------- 5\n");
@@ -44,7 +44,7 @@ int main(void){
                 cadastrarPessoa();
                 break;
             case 2:
-                //removerPessoas();
+                removerCadastro();
                 break;
             case 3:
                 alterarPessoas();
@@ -106,7 +106,7 @@ void cadastrarPessoa(){
 void inputInformacao(noPessoa *novoNode){
     printf(">>> Cadastro Pessoa <<<\n");
     printf("Insira o nome:\n");
-    scanf(" %20[^\n]s", novoNode->nome);
+    scanf(" %20[^\n]", novoNode->nome);
     limparBuffer();
 
     printf("Insira o CPF\n");
@@ -151,8 +151,8 @@ int controleRepetir(){
         printf("SIM[s] | NAO[n]\n");
         scanf(" %c", &tempC);
         limparBuffer();
-        if(tolower(tempC)=='s'||tolower(tempC)=='n')
-            printf("numero invalido, digite novamente!\n");
+        if(!(tolower(tempC)=='s'||tolower(tempC)=='n'))
+            printf("opcao invalido, digite novamente!\n");
 
         if(tolower(tempC)=='s')
             return 1;
@@ -161,6 +161,44 @@ int controleRepetir(){
     }while(!(tolower(tempC)=='s'||tolower(tempC)=='n'));
 
     return 0;
+}
+void removerCadastro(){
+    char cpf[12];
+    printf("insira o CPF da pessoa que deseja remover os dados\n");
+    scanf(" %s", cpf);
+    limparBuffer();
+
+    if(head==NULL){
+        printf("lista vazia, nada a remover. \n");
+        return;
+    }
+    noPessoa* nodeDesejado = head;
+
+    int con=0;
+    while(nodeDesejado!=NULL){
+        if(strcmp(nodeDesejado->cpf, cpf)==0){
+            break;
+        }
+        con++;
+    }
+    noPessoa* nodeAnterior =head;
+
+    if(con==0){
+        head=nodeAnterior->proximo;
+        printf("Cadastro: %s\nCadastro apagado\n", nodeDesejado->nome);
+        free(nodeDesejado);
+        return;
+    }
+
+    for(int i=0; nodeAnterior!=NULL && i<con-1; i++){
+        nodeDesejado = nodeAnterior->proximo;
+        nodeAnterior->proximo=nodeDesejado->proximo;
+
+        if(nodeDesejado!=NULL){
+            printf("Cadastro: %s\nCadastro apagado\n", nodeDesejado->nome);
+            free(nodeDesejado);
+        }
+    }
 }
 void exibirUmRegistro(){
     char cpf[12];
