@@ -1,6 +1,7 @@
 #include <stdio.h>
 #include <stdlib.h>
 #include <ctype.h>
+#include <string.h>
 
 typedef struct noPessoa{
     char nome[21];
@@ -16,8 +17,15 @@ noPessoa *head = NULL;
 
 void limparBuffer();
 void cadastrarPessoa();
-void removerCadastro();
+void inputInformacao();
+int controleRepetir();
+//void removerCadastro();
 int buscar(char cpf[12]);
+void imprimir(noPessoa* node);
+void exibirUmRegistro();
+void exibirTodosRegistros();
+void alterarPessoas();
+
 
 int main(void){
     int opt=0;
@@ -39,13 +47,13 @@ int main(void){
                 //removerPessoas();
                 break;
             case 3:
-                //alterarPessoas();
+                alterarPessoas();
                 break;
             case 4:
-                //exibirUmRegistro();
+                exibirUmRegistro();
                 break;
             case 5:
-                //exibirTodosRegistros();
+                exibirTodosRegistros();
                 break;
             case 0:
                 break;
@@ -54,6 +62,14 @@ int main(void){
     
         }
     }while(opt!=0);
+
+    noPessoa* atual = head;
+    while(atual!=NULL){
+        noPessoa* temp= atual->proximo;
+        free(atual);
+        atual = temp;
+    }
+    head = NULL;
 }
 
 void limparBuffer(){
@@ -67,7 +83,7 @@ void cadastrarPessoa(){
             printf("falha catastrofica, erro ao alocar memoria!\b");
             return;
         }
-        printf("node criado com sucesso");
+        printf("node criado com sucesso\n");
 
         inputInformacao(novoNode);
 
@@ -84,33 +100,55 @@ void cadastrarPessoa(){
             }
             ultimo->proximo=novoNode;
         }
+        
+    }while(controleRepetir());
+}
+void inputInformacao(noPessoa *novoNode){
+    printf(">>> Cadastro Pessoa <<<\n");
+    printf("Insira o nome:\n");
+    scanf(" %20[^\n]s", novoNode->nome);
+    limparBuffer();
 
-        
-        
-    }while(tolower(tempC)=='S');
+    printf("Insira o CPF\n");
+    scanf(" %s", novoNode->cpf);
+    limparBuffer();
+
+    printf("Insira a idade:\n");
+    scanf(" %i", &novoNode->idade);
+    limparBuffer();
+
+    printf("Insira Nº de telefone:\n");
+    scanf(" %s", novoNode->telefone);
+    limparBuffer();
+
+    char tempC;
+    printf("Insira o sexo:\n");
+    printf("Masculino [M]\n");
+    printf("Feminino [F]\n");
+    scanf(" %c", &tempC);
+    limparBuffer();
+
+    if(tolower(tempC)=='f'||tolower(tempC)=='m')
+        novoNode->sexo = tolower(tempC);
+        else{
+            printf("opcao invalida, sexo nao cadastrado!\n");
+            novoNode->sexo=' ';
+        }
 }
-void inputInformacao(noPessoa **novoNode){
-    
-}
-int buscar(char cpf[12]){
-    int con=1;
-    noPessoa *noAtual = head;
-    while(noAtual!=NULL){
-        if(strcmp(cpf, *noAtual->cpf)==0)
-            return con;
-        noAtual = noAtual->proximo;
-    }
-}
-void removerCadastro(){
-    if(head==NULL){
-        printf("lista vazia, nada a remover. \n");
-        return;
-    }
+void imprimir(noPessoa* node){
+    printf(">>CADASTROS<<\n");
+    printf("Nome: %s\n", node->nome);
+    printf("CPF: %s\n", node->cpf);
+    printf("Idade: %i\n", node->idade);
+    printf("Telefone: %s\n", node->telefone);
+    printf("Sexo: %c\n", toupper(node->sexo));
+
 }
 int controleRepetir(){
     char tempC;
     do{
         printf("deseja repetir a operacao?\n");
+        printf("SIM[s] | NAO[n]\n");
         scanf(" %c", &tempC);
         limparBuffer();
         if(tolower(tempC)=='s'||tolower(tempC)=='n')
@@ -121,4 +159,58 @@ int controleRepetir(){
         if(tolower(tempC)=='n')
             return 0;
     }while(!(tolower(tempC)=='s'||tolower(tempC)=='n'));
+
+    return 0;
+}
+void exibirUmRegistro(){
+    char cpf[12];
+    printf("insira o CPF da pessoa que deseja imprimir os dados\n");
+    scanf(" %s", cpf);
+    limparBuffer();
+
+    noPessoa* nodeRequerido = head;
+    if(nodeRequerido==NULL){
+        printf("Lista de cadastro vazia\n");
+        return;
+    }
+    while(nodeRequerido!=NULL){
+        if(strcmp(nodeRequerido->cpf, cpf)==0){
+            imprimir(nodeRequerido);
+            return;
+        }
+        nodeRequerido = nodeRequerido->proximo;
+    }
+    printf("Pessoa procurada nao esta cadastrada!\n");
+}
+void exibirTodosRegistros(){
+    noPessoa* nodeRequerido = head;
+    if(nodeRequerido==NULL){
+        printf("Lista de cadastro vazia\n");
+        return;
+    }
+    while(nodeRequerido!=NULL){
+        imprimir(nodeRequerido);
+        nodeRequerido = nodeRequerido->proximo;
+    }
+}
+void alterarPessoas(){
+    char cpf[12];
+    printf("insira o CPF da pessoa que deseja imprimir os dados\n");
+    scanf(" %s", cpf);
+    limparBuffer();
+
+    noPessoa* nodeRequerido = head;
+    if(nodeRequerido==NULL){
+        printf("Lista de cadastro vazia\n");
+        return;
+    }
+    while(nodeRequerido!=NULL){
+        if(strcmp(nodeRequerido->cpf, cpf)==0){
+            inputInformacao(nodeRequerido);
+            return;
+        }
+        nodeRequerido = nodeRequerido->proximo;
+    }
+    printf("Pessoa procurada nao esta cadastrada!\n");
+
 }
