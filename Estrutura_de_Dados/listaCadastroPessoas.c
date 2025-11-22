@@ -13,7 +13,7 @@ typedef struct noPessoa{
     struct noPessoa *proximo;
 }noPessoa;
 
-noPessoa *head = NULL;
+noPessoa *head = NULL; 
 
 void limparBuffer();
 void cadastrarPessoa();

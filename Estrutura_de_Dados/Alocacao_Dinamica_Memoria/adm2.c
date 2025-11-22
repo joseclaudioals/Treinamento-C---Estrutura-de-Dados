@@ -30,25 +30,15 @@ int capacidade  = 0;
 int totalPessoas = 0;
 
 int alocar();
-
 int desalocar();
-
 void limparBuffer();
-
 void cadastrarPessoa();
-
 void alterarPessoas();
-
 int busca(char tempString[12]);
-
 void removerPessoas();
-
 void mostrarPessoa(int i);
-
 void exibirUmRegistro();
-
 void exibirTodosRegistros();
-
 
 int main(void){
     cadastroP = realloc(NULL, sizeof(Pessoa *)*1);
