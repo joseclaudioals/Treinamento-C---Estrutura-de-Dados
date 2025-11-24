@@ -7,6 +7,8 @@ typedef struct Aluno{
 }Aluno;
 
 void adicionarAluno(Aluno*** listaAlunos, int* capacidade, int* total);
+void limparBuffer();
+void alocarMemoria(int *capacidade, Aluno*** listaAlunos );
 
 int main(void){
     Aluno** listaAlunos = NULL;
@@ -66,7 +68,7 @@ void adicionarAluno(Aluno*** listaAlunos, int* capacidade, int* total){
     int opt=0;
     do{
         if(*total==*capacidade){
-            //alocarMemoria();
+            alocarMemoria(capacidade, listaAlunos);
         }
 
         (*listaAlunos)[*total]=malloc(sizeof(Aluno));
@@ -91,12 +93,21 @@ void limparBuffer(){
     int c;
     while((c=getchar())!='\n' && c != EOF){}
 }
-/* void alocarMemoria(){
+ void alocarMemoria(int *capacidade, Aluno*** listaAlunos ){
+    (*capacidade)+=3;
 
+    Aluno** tempCadastro = realloc(*listaAlunos, sizeof(Aluno*)*(*capacidade));
+    if(tempCadastro==NULL){
+        printf("Erro catastrofico ao realocar memoria");
+        exit(1);
+    }
+    printf("\n memoria alocada com sucesso \n");
+
+    *listaAlunos = tempCadastro;
 }
-void realocarMemoria(){
+/* void realocarMemoria(){
     
-} */
+}  */
 
 
 
