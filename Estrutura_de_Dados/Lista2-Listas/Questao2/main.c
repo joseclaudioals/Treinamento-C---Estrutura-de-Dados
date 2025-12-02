@@ -14,6 +14,8 @@ typedef struct Pilha{
 void iniciarPilha(Pilha* p);
 void visitarPagina(Pilha* p);
 char* voltarPagina(Pilha* p);
+void liberarPilha(Pilha* f);
+
 
 int main(void){
     Pilha p;
@@ -47,6 +49,8 @@ int main(void){
         
     }while(opt!=0);
 
+    liberarPilha(&p);
+    
     return 0;
 }
 
@@ -86,5 +90,19 @@ char* voltarPagina(Pilha* p){ //mesma coisa que pop
     free(temp);
 
     return url;
-    
+
+}
+
+void liberarPilha(Pilha* f){
+    Node* atual = f->topo;
+    Node* proximo;
+
+    while(atual!=NULL){
+        proximo = atual->proximo;
+        free(atual);
+        atual = proximo;
+    }
+    f->topo=NULL;
+
+    printf("memoria liberada\n");
 }
