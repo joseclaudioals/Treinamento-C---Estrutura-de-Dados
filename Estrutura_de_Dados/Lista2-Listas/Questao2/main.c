@@ -1,35 +1,90 @@
 #include <stdio.h>
 #include <stdlib.h>
+#include <string.h>
 
-typedef struct Carro{
-    char modelo[20];
-    char placa[20];
-    int ano
-}Carro;
+typedef struct Node{
+    char url[80];
+   struct Node* proximo;
+}Node;
+
+typedef struct Pilha{
+    Node* topo;
+}Pilha;
+
+void iniciarPilha(Pilha* p);
+void visitarPagina(Pilha* p);
+char* voltarPagina(Pilha* p);
 
 int main(void){
-    Carro* meuCarro = malloc(sizeof(Carro));
+    Pilha p;
+    iniciarPilha(&p);
 
-    if(meuCarro==NULL){
-        printf("Falha catastrofica!\nErro na aloação\n");
-        return 0;
+    int opt;
+    do{
+        printf("Visitar pagina - 1\n");
+        printf("voltar pagina ---- 2\n");
+        printf("sair -------------- 0\n");
+        scanf(" %i", &opt);
+        switch(opt){
+            case 1: 
+                visitarPagina(&p);
+                break;
+            case 2:{
+                char* url = voltarPagina(&p);
+                
+                printf("pagina anterior: %s\n", url);
+                if(p.topo!=NULL)
+                    printf("pagina atual: %s\n", p.topo->url);
+
+                free(url);
+                break;
+            }
+            case 0:
+                break;
+            default:
+                printf("Opcao invalida\n");
+        }
+        
+    }while(opt!=0);
+
+    return 0;
+}
+
+void iniciarPilha(Pilha* p){
+    p->topo=NULL;
+}
+
+void visitarPagina(Pilha* p){ //mesma coisa que push
+    Node* novoNode=malloc(sizeof(Node));
+    if(novoNode==NULL){
+        printf("Erro ao alocar memoria\n");
+        return;
     }
 
-    printf(">> Cadastro Carro <<\n");
-    printf("Insira o modelo:\n");
-    scanf(" %s", meuCarro->modelo);
-    printf("Insira a placa:\n");
-    scanf(" %s", meuCarro->placa);
-    printf("Insira o ano:\n");
-    scanf(" %i", &meuCarro->ano);
+    printf("Insira a url visitada\n");
+    scanf(" %79[^\n]", novoNode->url);
 
-    printf("\n>> Cadastro Carro <<\n");
-    printf("Modelo: %s\n", meuCarro->modelo);
-    printf("Placa: %s\n", meuCarro->placa);
-    printf("Ano: %i\n", meuCarro->ano);
+    printf("Node criado com sucesso\n");
 
-    free(meuCarro);
+    novoNode->proximo=p->topo;
+    p->topo=novoNode;
+}
 
-    meuCarro= NULL;
-    return 0;
+char* voltarPagina(Pilha* p){ //mesma coisa que pop
+    if(p->topo==NULL){
+        printf("pilha vazia\n");
+        return NULL;
+    }
+    Node* temp = p->topo;
+
+    char* url = malloc(strlen(temp->url)+2);
+    if(url==NULL) return NULL;
+    
+    strcpy(url, temp->url);
+
+    p->topo = temp->proximo;
+    free(temp);
+
+    return url;
+    
 }
